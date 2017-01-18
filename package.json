@@ -28,7 +28,7 @@
     "pulp:login": "pulp login",
     "pulp:psci": "pulp psci",
     "pulp:publish": "pulp publish",
-    "pulp:run": "pulp run",
+    "pulp:run": "pulp run --",
     "pulp:server": "pulp server",
     "pulp:test": "pulp test",
     "pulp:version": "pulp version",

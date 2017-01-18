@@ -1,9 +1,11 @@
 module Main where
 
-import Prelude
+import Prelude (Unit, ($), (<>), bind, show)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
+import Node.Process (PROCESS, argv) as Process
 
-main :: forall e. Eff (console :: CONSOLE | e) Unit
+main :: forall e. Eff (console :: CONSOLE, process :: Process.PROCESS | e) Unit
 main = do
-  log "Hello sailor!"
+  argv <- Process.argv
+  log $ "argv: " <> show argv
