@@ -1,8 +1,8 @@
 module Fetch (HTTP, fetch) where
 
-import Control.Monad.Cont.Trans (ContT(..))
+import Control.Monad.Aff (Aff, makeAff)
 import Control.Monad.Eff (Eff)
-import Data.Either (Either(..))
+import Control.Monad.Eff.Exception (Error)
 import Data.Foreign (Foreign)
 import Data.Options (Options, options)
 import Fetch.Options (FetchOptions, defaults)
@@ -14,9 +14,9 @@ foreign import fetchImpl ::
   forall eff.
     Foreign
     -> (String -> Eff (http :: HTTP | eff) Unit)
-    -> (String -> Eff (http :: HTTP | eff) Unit)
+    -> (Error -> Eff (http :: HTTP | eff) Unit)
     -> (Eff (http :: HTTP | eff) Unit)
 
-fetch :: forall eff. Options FetchOptions -> ContT Unit (Eff (http :: HTTP | eff)) (Either String String)
-fetch opts = ContT \k ->
-fetchImpl (options $ defaults <> opts) (k <<< Right) (k <<< Left)
+fetch :: forall eff. Options FetchOptions -> Aff (http :: HTTP | eff) String
+fetch opts = makeAff \ng ok ->
+  fetchImpl (options $ defaults <> opts) ok ng
