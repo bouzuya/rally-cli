@@ -6,7 +6,7 @@ import Control.Monad.Eff.Exception (Error)
 import Data.Foreign (Foreign)
 import Data.Options (Options, options)
 import Fetch.Options (FetchOptions, defaults)
-import Prelude (Unit, ($), (<>), (<<<))
+import Prelude (Unit, ($), (<>))
 
 foreign import data HTTP :: !
 
