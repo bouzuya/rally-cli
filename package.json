@@ -10,6 +10,9 @@
   "bin": {
     "rally": "./bin/rally"
   },
+  "dependencies": {
+    "isomorphic-fetch": "2.2.1"
+  },
   "devDependencies": {
     "bower": "1.8.0",
     "pulp": "10.0.0",
