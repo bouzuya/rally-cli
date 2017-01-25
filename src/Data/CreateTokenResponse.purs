@@ -24,7 +24,7 @@ instance createTokenResponseShow :: Show CreateTokenResponse where
     <> "refreshToken: \"" <> refreshToken <> "\", "
     <> "expiredAt: \"" <> expiredAt <> "\", "
     <> "refreshTokenExpiredAt: \"" <> refreshTokenExpiredAt <> "\", "
-    <> "userId: \"" <> userId <> "\" }"
+    <> "userId: \"" <> userId <> "\" })"
 
 instance createTokenResponseIsForeign :: IsForeign CreateTokenResponse where
   read value = do
