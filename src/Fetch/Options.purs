@@ -1,6 +1,7 @@
 module Fetch.Options
   ( FetchOptions
   , Method(..)
+  , body
   , defaults
   , headers
   , method
@@ -10,7 +11,7 @@ module Fetch.Options
 import Prelude (show)
 import Data.Show (class Show)
 import Data.Functor.Contravariant (cmap)
-import Data.Options (Option, Options, defaultToOptions, options, opt)
+import Data.Options (Option, Options, defaultToOptions, opt)
 import Data.StrMap (StrMap)
 
 data Method = DELETE | GET | HEAD | PATCH | POST | PUT
@@ -24,6 +25,9 @@ instance showMethod :: Show Method where
   show PUT = "PUT"
 
 data FetchOptions
+
+body :: Option FetchOptions String
+body = opt "body"
 
 defaults :: Options FetchOptions
 defaults = defaultToOptions "method" GET
