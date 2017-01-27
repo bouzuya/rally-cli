@@ -7,6 +7,8 @@ import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION)
 import CreateToken (createToken)
+import GetStampRally (getStampRally)
+import Data.CreateTokenResponse (CreateTokenResponse(..))
 import Data.Maybe (maybe)
 import Data.StrMap (lookup) as StrMap
 import Fetch (HTTP)
@@ -24,10 +26,14 @@ export _ = void $ launchAff do
   let password = maybe "" id $ StrMap.lookup "PASSWORD" env
   token <- createToken email password
   liftEff $ log $ show token
-  -- let url = "https://api.rallyapp.jp/rallies/kqahbgshyjwrbzwh"
-  -- text <- fetch $ FetchOptions.method := FetchOptions.GET
-  --                 <> FetchOptions.url := url
+  do
+    let stampRallyId = maybe "" id $ StrMap.lookup "STAMP_RALLY_ID" env
+    liftEff $ log stampRallyId
+    stampRally <- getStampRally stampRallyId $ accessToken token
+    liftEff $ log $ show stampRally
   liftEff $ Process.exit 0
+  where
+    accessToken (CreateTokenResponse { token }) = token
 
 help :: Array String -> Eff Effs Unit
 help _ = do
