@@ -6,14 +6,14 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION)
-import CreateToken (createToken)
-import GetStampRally (getStampRally)
 import Data.CreateTokenResponse (CreateTokenResponse(..))
 import Data.Maybe (maybe)
 import Data.StrMap (lookup) as StrMap
 import Fetch (HTTP)
 import Node.Process (PROCESS, argv, getEnv, exit) as Process
 import Prelude (Unit, ($), (==), bind, id, show, void)
+import Request.CreateToken (createToken)
+import Request.GetStampRally (getStampRally)
 
 type Effs = (console :: CONSOLE, err :: EXCEPTION, http :: HTTP, process :: Process.PROCESS)
 
