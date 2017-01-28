@@ -19,6 +19,7 @@ type Effs = (console :: CONSOLE, err :: EXCEPTION, http :: HTTP, process :: Proc
 
 -- process.env.EMAIL='<email>'
 -- process.env.PASSWORD='<password>'
+-- process.env.STAMP_RALLY_ID='<stamp_rally_id>'
 export :: Array String -> Eff Effs Unit
 export _ = void $ launchAff do
   env <- liftEff $ Process.getEnv
