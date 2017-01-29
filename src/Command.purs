@@ -1,8 +1,8 @@
 module Command (Command, command, name, args) where
 
-import Prelude (class Show, ($), (<>), id, show)
 import Data.Array (drop, head, tail) as Array
-import Data.Maybe (maybe) as Maybe
+import Data.Maybe (fromMaybe) as Maybe
+import Prelude (class Show, ($), (<>), show)
 
 data Command = Command String (Array String)
 
@@ -12,8 +12,8 @@ instance commandShow :: Show Command where
 command :: Array String -> Command
 command argv = Command n a
   where
-    n = Maybe.maybe "help" id $ Array.head $ Array.drop 2 argv
-    a = Maybe.maybe [] id $ Array.tail $ Array.drop 2 argv
+    n = Maybe.fromMaybe "help" $ Array.head $ Array.drop 2 argv
+    a = Maybe.fromMaybe [] $ Array.tail $ Array.drop 2 argv
 
 name :: Command -> String
 name (Command n _) = n

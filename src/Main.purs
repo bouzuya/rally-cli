@@ -8,7 +8,7 @@ import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION)
 import Data.CreateTokenResponse (CreateTokenResponse(..))
 import Data.GetStampRallyResponse (GetStampRallyResponse)
-import Data.Maybe (maybe)
+import Data.Maybe (fromMaybe)
 import Data.StrMap (lookup) as StrMap
 import Fetch (HTTP)
 import Node.Process (PROCESS, argv, getEnv, exit) as Process
@@ -37,9 +37,9 @@ params :: forall eff
                   }
 params = do
   env <- Process.getEnv
-  let email = maybe "" id $ StrMap.lookup "EMAIL" env
-  let password = maybe "" id $ StrMap.lookup "PASSWORD" env
-  let stampRallyId = maybe "" id $ StrMap.lookup "STAMP_RALLY_ID" env
+  let email = fromMaybe "" $ StrMap.lookup "EMAIL" env
+  let password = fromMaybe "" $ StrMap.lookup "PASSWORD" env
+  let stampRallyId = fromMaybe "" $ StrMap.lookup "STAMP_RALLY_ID" env
   pure { email, password, stampRallyId }
 
 export :: forall eff

@@ -4,9 +4,9 @@ import Data.Foreign (F, Foreign, readString)
 import Data.Foreign.Class (class IsForeign, readProp)
 import Data.Foreign.Index (prop)
 import Data.Foreign.Null (readNull, unNull)
-import Data.Maybe (maybe)
+import Data.Maybe (fromMaybe)
 import Data.Show (class Show, show)
-import Prelude (($), (<>), bind, id, pure)
+import Prelude (($), (<>), bind, pure)
 
 data Detail = Detail { id :: Int
                      , name :: String
@@ -103,7 +103,7 @@ readNullProp :: String -> String -> Foreign -> F String
 readNullProp p defaultValue o = do
   pv <- prop p o
   ns <- readNull readString pv
-  pure $ maybe defaultValue id $ unNull ns
+  pure $ fromMaybe defaultValue $ unNull ns
 
 instance getStampRallyResponseIsForeign :: IsForeign GetStampRallyResponse where
   read value = do
