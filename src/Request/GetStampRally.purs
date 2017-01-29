@@ -1,27 +1,29 @@
 module Request.GetStampRally (getStampRally) where
 
-import Control.Monad.Aff (Aff)
+import Control.Monad.Aff (Aff, makeAff)
+import Control.Monad.Eff.Exception (error)
 import Control.Monad.Except (runExcept)
-import Data.GetStampRallyResponse (GetStampRallyResponse)
-import Data.Either (fromRight)
+import Data.Either (either)
 import Data.Foreign (F)
 import Data.Foreign.Class (readJSON)
+import Data.GetStampRallyResponse (GetStampRallyResponse)
 import Data.Options ((:=))
 import Data.StrMap (fromFoldable) as StrMap
 import Data.Tuple (Tuple(..))
 import Fetch (HTTP, fetch)
 import Fetch.Options (Method(..), headers, method, url) as FetchOptions
-import Partial.Unsafe (unsafePartial)
-import Prelude (($), (<>), bind, pure)
+import Prelude (($), (<>), (<<<), bind, pure, show)
 
 getStampRally :: forall eff
                . String
                -> String
-               -> Aff (http :: HTTP | eff) GetStampRallyResponse
+               -> Aff ( http :: HTTP
+                      | eff
+                      ) GetStampRallyResponse
 getStampRally stampRallyId token = do
   text <- fetch options
-  let e = runExcept $ readJSON text :: F GetStampRallyResponse
-  pure $ unsafePartial $ fromRight e
+  let f = readJSON text :: F GetStampRallyResponse
+  makeAff (\ng ok -> either (ng <<< error <<< show) ok $ runExcept f)
   where
     headers = StrMap.fromFoldable [ Tuple "Content-Type" "application/json"
                                   , Tuple "User-Agent" "rally-cli"
