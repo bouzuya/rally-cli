@@ -20,7 +20,7 @@ data GetStampRallyResponse = GetStampRallyResponse
   -- , images :: [] -- TODO
   , mapVisible :: Boolean
   , open :: Boolean
-  , spotRadiusDefault :: String -- NumberString
+  , spotRadiusDefault :: Number
   , spotStampByLocationDefault :: Boolean
   , spotStampByQrCodeDefault :: Boolean
   , startDatetime :: String -- DateTimeString
@@ -59,7 +59,7 @@ instance getStampRallyResponseShow :: Show GetStampRallyResponse where
     <> "endDatetime: \"" <> endDatetime <> "\", "
     <> "mapVisible: \"" <> show mapVisible <> "\", "
     <> "open: \"" <> show open <> "\", "
-    <> "spotRadiusDefault: \"" <> spotRadiusDefault <> "\", "
+    <> "spotRadiusDefault: \"" <> show spotRadiusDefault <> "\", "
     <> "spotStampByLocationDefault: \""
       <> show spotStampByLocationDefault
       <> "\", "
@@ -92,12 +92,12 @@ instance getStampRallyResponseIsForeign :: IsForeign GetStampRallyResponse where
     spotStampByLocationDefault <- readProp "spotStampByLocationDefault" value
     spotStampByQrCodeDefault <- readProp "spotStampByQrCodeDefault" value
     startDatetime <- readProp "startDatetime" value
-    -- tagline <- readNullProp "tagline" "" value
+    tagline <- readNullProp "tagline" "" value
     themeBackgroundPattern <- readProp "themeBackgroundPattern" value
     themeRewardPattern <- readProp "themeRewardPattern" value
     themeSpotPattern <- readProp "themeSpotPattern" value
     pure $ GetStampRallyResponse { id
-                                 , description: "aaa"
+                                 , description
                                  , display
                                  , displayEndDatetime
                                  , displayName
@@ -109,7 +109,7 @@ instance getStampRallyResponseIsForeign :: IsForeign GetStampRallyResponse where
                                  , spotStampByLocationDefault
                                  , spotStampByQrCodeDefault
                                  , startDatetime
-                                 , tagline: "aaa"
+                                 , tagline
                                  , themeBackgroundPattern
                                  , themeRewardPattern
                                  , themeSpotPattern
