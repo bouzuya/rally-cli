@@ -1,7 +1,7 @@
 module Data.CreateTokenResponse where
 
 import Data.Foreign.Class (class IsForeign, readProp)
-import Data.Show (class Show)
+import Data.Show (class Show, show)
 import Prelude (($), (<>), bind, pure)
 
 data CreateTokenResponse = CreateTokenResponse
@@ -20,11 +20,11 @@ instance createTokenResponseShow :: Show CreateTokenResponse where
                             , userId
                             }) =
     "(CreateTokenResponse { "
-    <> "token: \"" <> token <> "\", "
-    <> "refreshToken: \"" <> refreshToken <> "\", "
-    <> "expiredAt: \"" <> expiredAt <> "\", "
-    <> "refreshTokenExpiredAt: \"" <> refreshTokenExpiredAt <> "\", "
-    <> "userId: \"" <> userId <> "\" })"
+    <> "token: " <> show token <> ", "
+    <> "refreshToken: " <> show refreshToken <> ", "
+    <> "expiredAt: " <> show expiredAt <> ", "
+    <> "refreshTokenExpiredAt: " <> show refreshTokenExpiredAt <> ", "
+    <> "userId: " <> show userId <> " })"
 
 instance createTokenResponseIsForeign :: IsForeign CreateTokenResponse where
   read value = do
