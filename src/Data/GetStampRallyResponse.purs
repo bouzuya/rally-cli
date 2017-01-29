@@ -8,10 +8,36 @@ import Data.Maybe (maybe)
 import Data.Show (class Show, show)
 import Prelude (($), (<>), bind, id, pure)
 
+data Detail = Detail { id :: Int
+                     , name :: String
+                     , value :: String
+                     }
+
+instance detailShow :: Show Detail where
+  show (Detail { id
+               , name
+               , value
+               }) =
+    "(Detail { "
+    <> "id: " <> show id <> ", "
+    <> "name: " <> show name <> ", "
+    <> "value: " <> show value <> " "
+    <> "})"
+
+instance detailIsForeign :: IsForeign Detail where
+  read v = do
+    id <- readProp "id" v
+    name <- readProp "name" v
+    value <- readProp "value" v
+    pure $ Detail { id
+                  , name
+                  , value
+                  }
+
 data GetStampRallyResponse = GetStampRallyResponse
   { id :: String
   , description :: String
-  -- , details :: [] -- TODO
+  , details :: Array Detail
   , display :: Boolean
   , displayEndDatetime :: String -- DateTimeString
   , displayName :: String
@@ -32,6 +58,7 @@ data GetStampRallyResponse = GetStampRallyResponse
 
 instance getStampRallyResponseShow :: Show GetStampRallyResponse where
   show (GetStampRallyResponse { id
+                              , details
                               , description
                               , display
                               , displayEndDatetime
@@ -51,6 +78,7 @@ instance getStampRallyResponseShow :: Show GetStampRallyResponse where
                               }) =
     "(GetStampRallyResponse { "
     <> "id: " <> show id <> ", "
+    <> "details: " <> show details <> ", "
     <> "description: " <> show description <> ", "
     <> "display: " <> show display <> ", "
     <> "displayEndDatetime: " <> show displayEndDatetime <> ", "
@@ -80,6 +108,7 @@ readNullProp p defaultValue o = do
 instance getStampRallyResponseIsForeign :: IsForeign GetStampRallyResponse where
   read value = do
     id <- readProp "id" value
+    details <- readProp "details" value
     description <- readNullProp "description" "" value
     display <- readProp "display" value
     displayEndDatetime <- readProp "displayEndDatetime" value
@@ -97,6 +126,7 @@ instance getStampRallyResponseIsForeign :: IsForeign GetStampRallyResponse where
     themeRewardPattern <- readProp "themeRewardPattern" value
     themeSpotPattern <- readProp "themeSpotPattern" value
     pure $ GetStampRallyResponse { id
+                                 , details
                                  , description
                                  , display
                                  , displayEndDatetime
