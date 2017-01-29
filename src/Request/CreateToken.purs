@@ -1,7 +1,7 @@
 module Request.CreateToken (createToken) where
 
 import Control.Monad.Aff (Aff, makeAff)
-import Control.Monad.Eff.Exception (EXCEPTION, error, throw)
+import Control.Monad.Eff.Exception (error)
 import Control.Monad.Except (runExcept)
 import Data.CreateTokenResponse (CreateTokenResponse)
 import Data.Either (either)
