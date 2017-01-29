@@ -12,7 +12,7 @@ import Data.StrMap (fromFoldable) as StrMap
 import Data.Tuple (Tuple(..))
 import Fetch (HTTP, fetch)
 import Fetch.Options (Method(..), headers, method, url) as FetchOptions
-import Prelude (($), (<>), (<<<), bind, pure, show)
+import Prelude (($), (<>), (<<<), bind, show)
 
 getStampRally :: forall eff
                . String
