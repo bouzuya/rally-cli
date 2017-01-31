@@ -1,4 +1,4 @@
-module Data.GetStampRallyResponse where
+module Data.GetStampRallyResponse (GetStampRallyResponse) where
 
 import Data.Foreign (F, Foreign, readString)
 import Data.Foreign.Class (class IsForeign, readProp)
@@ -46,7 +46,7 @@ data GetStampRallyResponse = GetStampRallyResponse
   -- , images :: [] -- TODO
   , mapVisible :: Boolean
   , open :: Boolean
-  , spotRadiusDefault :: Number
+  , spotRadiusDefault :: String
   , spotStampByLocationDefault :: Boolean
   , spotStampByQrCodeDefault :: Boolean
   , startDatetime :: String -- DateTimeString
@@ -117,6 +117,7 @@ instance getStampRallyResponseIsForeign :: IsForeign GetStampRallyResponse where
     endDatetime <- readProp "endDatetime" value
     mapVisible <- readProp "mapVisible" value
     open <- readProp "open" value
+    -- TODO: String | Number
     spotRadiusDefault <- readProp "spotRadiusDefault" value
     spotStampByLocationDefault <- readProp "spotStampByLocationDefault" value
     spotStampByQrCodeDefault <- readProp "spotStampByQrCodeDefault" value
