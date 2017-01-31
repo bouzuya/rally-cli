@@ -7,14 +7,25 @@ import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION)
 import Data.CreateTokenResponse (CreateTokenResponse(..))
+import Data.GetSpotsResponse (GetSpotsResponse)
 import Data.GetStampRallyResponse (GetStampRallyResponse)
 import Data.Maybe (fromMaybe)
 import Data.StrMap (lookup) as StrMap
 import Fetch (HTTP)
 import Node.Process (PROCESS, argv, getEnv, exit) as Process
-import Prelude (Unit, ($), (==), bind, id, pure, show, void)
+import Prelude (Unit, ($), (==), bind, pure, show, void)
 import Request.CreateToken (createToken)
+import Request.GetSpots (getSpots)
 import Request.GetStampRally (getStampRally)
+
+getSpots' :: forall eff
+                  . CreateTokenResponse
+                  -> String
+                  -> Aff ( http :: HTTP
+                         | eff
+                         ) GetSpotsResponse
+getSpots' (CreateTokenResponse { token }) stampRallyId = do
+  getSpots stampRallyId token
 
 getStampRally' :: forall eff
                   . CreateTokenResponse
@@ -55,7 +66,9 @@ export _ = void $ launchAff do
   token <- createToken email password
   liftEff $ log $ show token
   stampRally <- getStampRally' token stampRallyId
+  spots <- getSpots' token stampRallyId
   liftEff $ log $ show stampRally
+  liftEff $ log $ show spots
   liftEff $ Process.exit 0
 
 help :: forall eff
