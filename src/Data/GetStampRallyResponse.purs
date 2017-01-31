@@ -1,5 +1,6 @@
 module Data.GetStampRallyResponse (GetStampRallyResponse) where
 
+import Data.Detail (Detail)
 import Data.Foreign (F, Foreign, readString)
 import Data.Foreign.Class (class IsForeign, readProp)
 import Data.Foreign.Index (prop)
@@ -7,32 +8,6 @@ import Data.Foreign.Null (readNull, unNull)
 import Data.Maybe (fromMaybe)
 import Data.Show (class Show, show)
 import Prelude (($), (<>), bind, pure)
-
-data Detail = Detail { id :: Int
-                     , name :: String
-                     , value :: String
-                     }
-
-instance detailShow :: Show Detail where
-  show (Detail { id
-               , name
-               , value
-               }) =
-    "(Detail { "
-    <> "id: " <> show id <> ", "
-    <> "name: " <> show name <> ", "
-    <> "value: " <> show value <> " "
-    <> "})"
-
-instance detailIsForeign :: IsForeign Detail where
-  read v = do
-    id <- readProp "id" v
-    name <- readProp "name" v
-    value <- readProp "value" v
-    pure $ Detail { id
-                  , name
-                  , value
-                  }
 
 data GetStampRallyResponse = GetStampRallyResponse
   { id :: String
