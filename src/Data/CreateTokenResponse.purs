@@ -1,4 +1,4 @@
-module Data.CreateTokenResponse where
+module Data.CreateTokenResponse (CreateTokenResponse(..)) where
 
 import Data.Foreign.Class (class IsForeign, readProp)
 import Data.Show (class Show, show)

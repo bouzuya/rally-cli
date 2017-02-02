@@ -1,4 +1,4 @@
-module Data.GetSpotsResponse where
+module Data.GetSpotsResponse (GetSpotsItem(..), GetSpotsResponse(..)) where
 
 import Data.Foreign.Class (class IsForeign, read, readProp)
 import Data.Foreign.Index (prop)

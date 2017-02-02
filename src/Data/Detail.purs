@@ -1,4 +1,4 @@
-module Data.Detail (Detail) where
+module Data.Detail (Detail(..)) where
 
 import Data.Foreign.Class (class IsForeign, readProp)
 import Data.Show (class Show, show)

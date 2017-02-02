@@ -1,4 +1,4 @@
-module Data.GetStampRallyResponse (GetStampRallyResponse) where
+module Data.GetStampRallyResponse (GetStampRallyResponse(..)) where
 
 import Data.Detail (Detail)
 import Data.Foreign (F, Foreign, readString)
