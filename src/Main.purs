@@ -7,14 +7,18 @@ import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION)
 import Data.CreateTokenResponse (CreateTokenResponse(..))
-import Data.GetSpotsResponse (GetSpotsResponse)
+import Data.Functor (mapFlipped)
+import Data.GetSpotResponse (GetSpotResponse)
+import Data.GetSpotsResponse (GetSpotsResponse(..), GetSpotsItem(..))
 import Data.GetStampRallyResponse (GetStampRallyResponse)
 import Data.Maybe (fromMaybe)
 import Data.StrMap (lookup) as StrMap
+import Data.Traversable (sequence)
 import Fetch (HTTP)
 import Node.Process (PROCESS, argv, getEnv, exit) as Process
 import Prelude (Unit, ($), (==), bind, pure, show, void)
 import Request.CreateToken (createToken)
+import Request.GetSpot (getSpot)
 import Request.GetSpots (getSpots)
 import Request.GetStampRally (getStampRally)
 
@@ -23,9 +27,10 @@ getSpots' :: forall eff
                   -> String
                   -> Aff ( http :: HTTP
                          | eff
-                         ) GetSpotsResponse
-getSpots' (CreateTokenResponse { token }) stampRallyId = do
-  getSpots stampRallyId token
+                         ) (Array GetSpotResponse)
+getSpots' (CreateTokenResponse { token }) stampRallyId = do -- A a b
+  (GetSpotsResponse { ids }) <- getSpots stampRallyId token
+  sequence $ mapFlipped ids \(GetSpotsItem { id }) -> getSpot id token
 
 getStampRally' :: forall eff
                   . CreateTokenResponse
