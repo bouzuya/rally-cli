@@ -38,18 +38,18 @@ instance getSpotResponseShow :: Show GetSpotResponse where
                         , tagline
                         , zoom
                         }) =
-    "(GetSpotResponse {"
-    <> " id: " <> show id <> ","
-    <> " description: " <> show description <> ","
-    <> " details: " <> show details <> ","
-    <> " lat: " <> show lat <> ","
-    <> " lng: " <> show lng <> ","
-    <> " name: " <> show name <> ","
-    <> " radius: " <> show radius <> ","
-    <> " stampByLocation: " <> show stampByLocation <> ","
-    <> " stampByQrCode: " <> show stampByQrCode <> ","
-    <> " tagline: " <> show tagline <> ","
-    <> " })"
+    "{"
+    <> " \"id\": " <> show id <> ","
+    <> " \"description\": " <> show description <> ","
+    <> " \"details\": " <> show details <> ","
+    <> " \"lat\": " <> show lat <> ","
+    <> " \"lng\": " <> show lng <> ","
+    <> " \"name\": " <> show name <> ","
+    <> " \"radius\": " <> show radius <> ","
+    <> " \"stampByLocation\": " <> show stampByLocation <> ","
+    <> " \"stampByQrCode\": " <> show stampByQrCode <> ","
+    <> " \"tagline\": " <> show tagline <> ","
+    <> " }"
 
 readNullProp :: String -> String -> Foreign -> F String
 readNullProp p defaultValue o = do

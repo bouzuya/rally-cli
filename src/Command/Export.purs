@@ -15,7 +15,7 @@ import Data.StrMap (lookup) as StrMap
 import Data.Traversable (sequence)
 import Fetch (HTTP)
 import Node.Process (PROCESS, getEnv, exit) as Process
-import Prelude (Unit, ($), bind, pure, show, void)
+import Prelude (Unit, ($), (<>), bind, pure, show, void)
 import Request.CreateToken (createToken)
 import Request.GetSpot (getSpot)
 import Request.GetSpots (getSpots)
@@ -68,9 +68,8 @@ export :: forall eff
 export _ = void $ launchAff do
   { email, password, stampRallyId } <- liftEff $ params
   token <- createToken email password
-  liftEff $ log $ show token
   stampRally <- getStampRally' token stampRallyId
   spots <- getSpots' token stampRallyId
-  liftEff $ log $ show stampRally
-  liftEff $ log $ show spots
+  liftEff $ log $ "{ \"stampRally\": " <> show stampRally <> ","
+    <> "\"spots\": " <> show spots <> " }"
   liftEff $ Process.exit 0

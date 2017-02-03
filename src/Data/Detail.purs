@@ -14,11 +14,11 @@ instance detailShow :: Show Detail where
                , name
                , value
                }) =
-    "(Detail { "
-    <> "id: " <> show id <> ", "
-    <> "name: " <> show name <> ", "
-    <> "value: " <> show value <> " "
-    <> "})"
+    "{"
+    <> " \"id\": " <> show id <> ","
+    <> " \"name\": " <> show name <> ","
+    <> " \"value\": " <> show value
+    <> " }"
 
 instance detailIsForeign :: IsForeign Detail where
   read v = do

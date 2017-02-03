@@ -19,12 +19,13 @@ instance createTokenResponseShow :: Show CreateTokenResponse where
                             , refreshTokenExpiredAt
                             , userId
                             }) =
-    "(CreateTokenResponse { "
-    <> "token: " <> show token <> ", "
-    <> "refreshToken: " <> show refreshToken <> ", "
-    <> "expiredAt: " <> show expiredAt <> ", "
-    <> "refreshTokenExpiredAt: " <> show refreshTokenExpiredAt <> ", "
-    <> "userId: " <> show userId <> " })"
+    "{"
+    <> " \"token\": " <> show token <> ","
+    <> " \"refreshToken\": " <> show refreshToken <> ","
+    <> " \"expiredAt\": " <> show expiredAt <> ","
+    <> " \"refreshTokenExpiredAt\": " <> show refreshTokenExpiredAt <> ","
+    <> " \"userId\": " <> show userId
+    <> " }"
 
 instance createTokenResponseIsForeign :: IsForeign CreateTokenResponse where
   read value = do

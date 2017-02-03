@@ -9,7 +9,7 @@ data GetSpotsItem = GetSpotsItem { id :: Int }
 data GetSpotsResponse = GetSpotsResponse { ids :: Array GetSpotsItem }
 
 instance getSpotsItemShow :: Show GetSpotsItem where
-  show (GetSpotsItem { id }) = "(GetSpotsItem { id: " <> show id <> " })"
+  show (GetSpotsItem { id }) = "{ \"id\": " <> show id <> " }"
 
 instance getSpotsItemIsForeign :: IsForeign GetSpotsItem where
   read value = do
@@ -17,8 +17,7 @@ instance getSpotsItemIsForeign :: IsForeign GetSpotsItem where
     pure $ GetSpotsItem { id }
 
 instance getSpotsResponseShow :: Show GetSpotsResponse where
-  show (GetSpotsResponse { ids }) =
-    "(GetSpotsResponse " <> show (map show ids) <> ")"
+  show (GetSpotsResponse { ids }) = show (map show ids)
 
 instance getSpotsResponseIsForeign :: IsForeign GetSpotsResponse where
   read value = do
