@@ -5,12 +5,14 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION)
+import Data.CreateStampRallyResponse (CreateStampRallyResponse(..))
 import Data.CreateTokenResponse (CreateTokenResponse(..))
 import Data.Maybe (fromMaybe)
 import Data.StrMap (lookup) as StrMap
 import Fetch (HTTP)
 import Node.Process (PROCESS, getEnv, exit) as Process
 import Prelude (Unit, ($), (<>), bind, pure, void)
+import Request.CreateStampRally (createStampRally)
 import Request.CreateToken (createToken)
 
 -- process.env.EMAIL='<email>'
@@ -41,5 +43,6 @@ import_ :: forall eff
 import_ _ = void $ launchAff do
   { email, password, stampRallyId } <- liftEff $ params
   (CreateTokenResponse { token }) <- createToken email password
-  liftEff $ log $ "import: " <> token
+  (CreateStampRallyResponse { id: newId }) <- createStampRally "hello" token
+  liftEff $ log $ "https://admin.rallyapp.jp/#/rallies/" <> newId
   liftEff $ Process.exit 0
