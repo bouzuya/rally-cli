@@ -6,6 +6,7 @@ import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION)
 import Data.CreateTokenResponse (CreateTokenResponse(..))
+import Data.Export (Export(..))
 import Data.Functor (mapFlipped)
 import Data.GetSpotResponse (GetSpotResponse)
 import Data.GetSpotsResponse (GetSpotsResponse(..), GetSpotsItem(..))
@@ -70,6 +71,5 @@ export _ = void $ launchAff do
   token <- createToken email password
   stampRally <- getStampRally' token stampRallyId
   spots <- getSpots' token stampRallyId
-  liftEff $ log $ "{ \"stampRally\": " <> show stampRally <> ","
-    <> "\"spots\": " <> show spots <> " }"
+  liftEff $ log $ show (Export { spots, stampRally })
   liftEff $ Process.exit 0
