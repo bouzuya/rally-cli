@@ -49,6 +49,7 @@ instance getSpotResponseShow :: Show GetSpotResponse where
     <> " \"stampByLocation\": " <> show stampByLocation <> ","
     <> " \"stampByQrCode\": " <> show stampByQrCode <> ","
     <> " \"tagline\": " <> show tagline <> ","
+    <> " \"zoom\": " <> show zoom
     <> " }"
 
 readNullProp :: String -> String -> Foreign -> F String
