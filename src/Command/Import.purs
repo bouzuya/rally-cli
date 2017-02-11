@@ -56,6 +56,24 @@ createStampRally' stampRally@(GetStampRallyResponse { displayName }) token = do
   updateStampRally newId stampRally token
   pure newId
 
+launchAff'
+  :: forall e
+   . Eff ( console :: CONSOLE
+         , err :: EXCEPTION
+         , http :: HTTP
+         , process :: Process.PROCESS
+         | e
+         ) Unit
+launchAff' =
+  void $ launchAff do
+    { email, password, stampRallyId } <- liftEff $ params
+    s <- Stdin.read Process.stdin
+    (Export { stampRally }) <- readExport s
+    (CreateTokenResponse { token }) <- createToken email password
+    newId <- createStampRally' stampRally token
+    liftEff $ log $ "https://admin.rallyapp.jp/#/rallies/" <> newId
+    liftEff $ Process.exit 0
+
 import_ :: forall eff
           . Array String
           -> Eff ( console :: CONSOLE
@@ -64,11 +82,4 @@ import_ :: forall eff
                  , process :: Process.PROCESS
                  | eff
                  ) Unit
-import_ _ = void $ launchAff do
-  { email, password, stampRallyId } <- liftEff $ params
-  s <- Stdin.read Process.stdin
-  (Export { stampRally }) <- readExport s
-  (CreateTokenResponse { token }) <- createToken email password
-  newId <- createStampRally' stampRally token
-  liftEff $ log $ "https://admin.rallyapp.jp/#/rallies/" <> newId
-  liftEff $ Process.exit 0
+import_ _ = launchAff'
