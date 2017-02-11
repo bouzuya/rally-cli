@@ -6,17 +6,21 @@ import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION, error, try)
 import Control.Monad.Except (runExcept)
+import Data.CreateSpotResponse (CreateSpotResponse)
 import Data.CreateStampRallyResponse (CreateStampRallyResponse(..))
 import Data.CreateTokenResponse (CreateTokenResponse(..))
 import Data.Either (Either(Left, Right), either)
 import Data.Export (Export(..))
-import Data.GetStampRallyResponse (GetStampRallyResponse(..))
 import Data.Foreign.Class (readJSON)
+import Data.GetSpotResponse (GetSpotResponse(..))
+import Data.GetStampRallyResponse (GetStampRallyResponse(..))
 import Data.Maybe (fromMaybe)
 import Data.StrMap (lookup) as StrMap
+import Data.Traversable (sequence)
 import Fetch (HTTP)
 import Node.Process (PROCESS, exit, getEnv, stdin) as Process
-import Prelude (Unit, ($), (<>), (<<<), bind, pure, show, unit, void)
+import Prelude (Unit, ($), (<>), (<$>), (<<<), bind, pure, show, unit, void)
+import Request.CreateSpot (createSpot)
 import Request.CreateStampRally (createStampRally)
 import Request.CreateToken (createToken)
 import Request.UpdateStampRally (updateStampRally)
@@ -56,6 +60,27 @@ createStampRally' stampRally@(GetStampRallyResponse { displayName }) token = do
   updateStampRally newId stampRally token
   pure newId
 
+createSpot'
+  :: forall e
+   . String
+  -> String
+  -> GetSpotResponse
+  -> Aff ( http :: HTTP
+         | e
+         ) CreateSpotResponse
+createSpot' stampRallyId token (GetSpotResponse { name }) =
+  createSpot stampRallyId name token
+
+createSpots
+  :: forall e
+   . String
+  -> Array GetSpotResponse
+  -> String
+  -> Aff ( http :: HTTP | e ) Unit
+createSpots stampRallyId spots token = do
+  sequence $ createSpot' stampRallyId token <$> spots
+  pure unit
+
 launchAff'
   :: forall e
    . Eff ( console :: CONSOLE
@@ -68,9 +93,10 @@ launchAff' =
   void $ launchAff do
     { email, password, stampRallyId } <- liftEff $ params
     s <- Stdin.read Process.stdin
-    (Export { stampRally }) <- readExport s
+    (Export { stampRally, spots }) <- readExport s
     (CreateTokenResponse { token }) <- createToken email password
     newId <- createStampRally' stampRally token
+    createSpots newId spots token
     liftEff $ log $ "https://admin.rallyapp.jp/#/rallies/" <> newId
     liftEff $ Process.exit 0
 
