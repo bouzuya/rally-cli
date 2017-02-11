@@ -45,6 +45,15 @@ readExport
 readExport s =
   makeAff \ng ok -> either (ng <<< error <<< show) ok $ runExcept $ readJSON s
 
+createStampRally'
+  :: forall e
+   . GetStampRallyResponse
+  -> String
+  -> Aff (console :: CONSOLE, http :: HTTP | e) String
+createStampRally' stampRally@(GetStampRallyResponse { displayName }) token = do
+  (CreateStampRallyResponse { id: newId }) <- createStampRally displayName token
+  pure newId
+
 import_ :: forall eff
           . Array String
           -> Eff ( console :: CONSOLE
@@ -56,10 +65,8 @@ import_ :: forall eff
 import_ _ = void $ launchAff do
   { email, password, stampRallyId } <- liftEff $ params
   s <- Stdin.read Process.stdin
-  (Export {
-    stampRally: (GetStampRallyResponse { displayName })
-  }) <- readExport s
+  (Export { stampRally }) <- readExport s
   (CreateTokenResponse { token }) <- createToken email password
-  (CreateStampRallyResponse { id: newId }) <- createStampRally displayName token
+  newId <- createStampRally' stampRally token
   liftEff $ log $ "https://admin.rallyapp.jp/#/rallies/" <> newId
   liftEff $ Process.exit 0
