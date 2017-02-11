@@ -19,6 +19,7 @@ import Node.Process (PROCESS, exit, getEnv, stdin) as Process
 import Prelude (Unit, ($), (<>), (<<<), bind, pure, show, void)
 import Request.CreateStampRally (createStampRally)
 import Request.CreateToken (createToken)
+import Request.UpdateStampRally (updateStampRally)
 import Stdin (read) as Stdin
 
 -- process.env.EMAIL='<email>'
@@ -52,6 +53,7 @@ createStampRally'
   -> Aff (console :: CONSOLE, http :: HTTP | e) String
 createStampRally' stampRally@(GetStampRallyResponse { displayName }) token = do
   (CreateStampRallyResponse { id: newId }) <- createStampRally displayName token
+  updateStampRally newId stampRally token
   pure newId
 
 import_ :: forall eff
