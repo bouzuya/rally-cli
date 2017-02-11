@@ -23,6 +23,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "build": "npm run pulp:build",
     "pulp": "pulp",
     "pulp:browserify": "pulp browserify",
     "pulp:build": "pulp build",
