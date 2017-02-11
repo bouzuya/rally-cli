@@ -4,11 +4,11 @@ import Control.Monad.Aff (Aff, launchAff, makeAff)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
-import Control.Monad.Eff.Exception (EXCEPTION, error)
+import Control.Monad.Eff.Exception (EXCEPTION, error, try)
 import Control.Monad.Except (runExcept)
 import Data.CreateStampRallyResponse (CreateStampRallyResponse(..))
 import Data.CreateTokenResponse (CreateTokenResponse(..))
-import Data.Either (either)
+import Data.Either (Either(Left, Right), either)
 import Data.Export (Export(..))
 import Data.GetStampRallyResponse (GetStampRallyResponse(..))
 import Data.Foreign.Class (readJSON)
@@ -16,7 +16,7 @@ import Data.Maybe (fromMaybe)
 import Data.StrMap (lookup) as StrMap
 import Fetch (HTTP)
 import Node.Process (PROCESS, exit, getEnv, stdin) as Process
-import Prelude (Unit, ($), (<>), (<<<), bind, pure, show, void)
+import Prelude (Unit, ($), (<>), (<<<), bind, pure, show, unit, void)
 import Request.CreateStampRally (createStampRally)
 import Request.CreateToken (createToken)
 import Request.UpdateStampRally (updateStampRally)
@@ -74,12 +74,30 @@ launchAff' =
     liftEff $ log $ "https://admin.rallyapp.jp/#/rallies/" <> newId
     liftEff $ Process.exit 0
 
+catchException
+  :: forall e
+   . Eff ( console :: CONSOLE
+         , err :: EXCEPTION
+         , process :: Process.PROCESS
+         | e
+         ) Unit
+  -> Eff ( console :: CONSOLE
+         , process :: Process.PROCESS
+         | e
+         ) Unit
+catchException eff = do
+  e <- try eff
+  case e of
+    (Left l) -> do
+      log $ show l
+      Process.exit 1
+    (Right _) -> pure unit
+
 import_ :: forall eff
           . Array String
           -> Eff ( console :: CONSOLE
-                 , err :: EXCEPTION
                  , http :: HTTP
                  , process :: Process.PROCESS
                  | eff
                  ) Unit
-import_ _ = launchAff'
+import_ _ = catchException launchAff'
