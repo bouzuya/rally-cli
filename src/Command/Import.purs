@@ -50,7 +50,7 @@ createStampRally'
   :: forall e
    . GetStampRallyResponse
   -> String
-  -> Aff (console :: CONSOLE, http :: HTTP | e) String
+  -> Aff ( http :: HTTP | e ) String
 createStampRally' stampRally@(GetStampRallyResponse { displayName }) token = do
   (CreateStampRallyResponse { id: newId }) <- createStampRally displayName token
   updateStampRally newId stampRally token
