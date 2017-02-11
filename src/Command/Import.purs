@@ -6,7 +6,7 @@ import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION, error, try)
 import Control.Monad.Except (runExcept)
-import Data.CreateSpotResponse (CreateSpotResponse)
+import Data.CreateSpotResponse (CreateSpotResponse(..))
 import Data.CreateStampRallyResponse (CreateStampRallyResponse(..))
 import Data.CreateTokenResponse (CreateTokenResponse(..))
 import Data.Either (Either(Left, Right), either)
@@ -23,6 +23,7 @@ import Prelude (Unit, ($), (<>), (<$>), (<<<), bind, pure, show, unit, void)
 import Request.CreateSpot (createSpot)
 import Request.CreateStampRally (createStampRally)
 import Request.CreateToken (createToken)
+import Request.UpdateSpot (updateSpot)
 import Request.UpdateStampRally (updateStampRally)
 import Stdin (read) as Stdin
 
@@ -67,9 +68,11 @@ createSpot'
   -> GetSpotResponse
   -> Aff ( http :: HTTP
          | e
-         ) CreateSpotResponse
-createSpot' stampRallyId token (GetSpotResponse { name }) =
-  createSpot stampRallyId name token
+         ) Int
+createSpot' stampRallyId token spot@(GetSpotResponse { name }) = do
+  (CreateSpotResponse { id: newId }) <- createSpot stampRallyId name token
+  updateSpot newId spot token
+  pure newId
 
 createSpots
   :: forall e
