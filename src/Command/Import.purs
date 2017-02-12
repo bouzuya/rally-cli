@@ -21,6 +21,7 @@ import Fetch (HTTP)
 import Node.Process (PROCESS, exit, getEnv, stdin) as Process
 import Prelude (Unit, ($), (<>), (<$>), (<<<), bind, pure, show, unit, void)
 import Request.CreateSpot (createSpot)
+import Request.CreateSpotDetail (createSpotDetail)
 import Request.CreateStampRally (createStampRally)
 import Request.CreateToken (createToken)
 import Request.UpdateSpot (updateSpot)
@@ -69,9 +70,10 @@ createSpot'
   -> Aff ( http :: HTTP
          | e
          ) Int
-createSpot' stampRallyId token spot@(GetSpotResponse { name }) = do
+createSpot' stampRallyId token spot@(GetSpotResponse { name, details }) = do
   (CreateSpotResponse { id: newId }) <- createSpot stampRallyId name token
   updateSpot newId spot token
+  sequence $ (\detail -> createSpotDetail newId detail token) <$> details
   pure newId
 
 createSpots
