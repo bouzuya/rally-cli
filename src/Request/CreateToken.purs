@@ -13,6 +13,14 @@ import Data.Tuple (Tuple(..))
 import Fetch (HTTP, fetch)
 import Fetch.Options (Method(..), body, headers, method, url) as FetchOptions
 import Prelude (($), (<>), (<<<), bind, show)
+import Request.Helper.P (p, ps)
+
+body :: String -> String -> String
+body email password =
+  ps [ p "view_type" "admin"
+     , p "email" email
+     , p "password" password
+     ]
 
 createToken :: forall eff
                . String
@@ -28,12 +36,7 @@ createToken email password = do
     headers = StrMap.fromFoldable [ Tuple "Content-Type" "application/json"
                                   , Tuple "User-Agent" "rally-cli"
                                   ]
-    body = "{" <>
-          "\"view_type\":\"admin\"" <> "," <>
-          "\"email\":\"" <> email <> "\"" <> "," <>
-          "\"password\":\"" <> password <> "\"" <>
-          "}"
     options = FetchOptions.method := FetchOptions.POST
               <> FetchOptions.url := "https://api.rallyapp.jp/tokens"
               <> FetchOptions.headers := headers
-              <> FetchOptions.body := body
+              <> FetchOptions.body := (body email password)

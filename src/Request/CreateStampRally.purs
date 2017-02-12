@@ -13,6 +13,13 @@ import Data.Tuple (Tuple(..))
 import Fetch (HTTP, fetch)
 import Fetch.Options (Method(..), body, headers, method, url) as FetchOptions
 import Prelude (($), (<>), (<<<), bind, show)
+import Request.Helper.P (p, ps)
+
+body :: String -> String
+body displayName =
+  ps [ p "view_type" "admin"
+     , p "display_name" displayName
+     ]
 
 createStampRally
   :: forall eff
@@ -30,12 +37,7 @@ createStampRally displayName token = do
                                   , Tuple "User-Agent" "rally-cli"
                                   , Tuple "Authorization" $ "Token token=\"" <> token <> "\""
                                   ]
-    body =
-      "{"
-      <> " " <> show "view_type" <> ":" <> show "admin" <> ","
-      <> " " <> show "display_name" <> ":" <> show displayName
-      <> " }"
     options = FetchOptions.method := FetchOptions.POST
               <> FetchOptions.url := "https://api.rallyapp.jp/stamp_rallies"
               <> FetchOptions.headers := headers
-              <> FetchOptions.body := body
+              <> FetchOptions.body := (body displayName)

@@ -13,13 +13,13 @@ import Data.Tuple (Tuple(..))
 import Fetch (HTTP, fetch)
 import Fetch.Options (Method(..), body, headers, method, url) as FetchOptions
 import Prelude (($), (<>), (<<<), bind, show)
+import Request.Helper.P (p, ps)
 
 body :: String -> String
 body displayName =
-  "{"
-  <> " " <> show "view_type" <> ":" <> show "admin" <> ","
-  <> " " <> show "name" <> ":" <> show displayName
-  <> " }"
+  ps [ p "view_type" "admin"
+     , p "name" displayName
+     ]
 
 url :: String -> String
 url stampRallyId =

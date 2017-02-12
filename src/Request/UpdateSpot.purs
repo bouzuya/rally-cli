@@ -8,6 +8,7 @@ import Data.Tuple (Tuple(..))
 import Fetch (HTTP, fetch)
 import Fetch.Options (Method(..), body, headers, method, url) as FetchOptions
 import Prelude (Unit, ($), (<>), (<$>), const, show, unit)
+import Request.Helper.P (p, ps)
 
 body :: GetSpotResponse -> String
 body (GetSpotResponse { description
@@ -21,19 +22,18 @@ body (GetSpotResponse { description
                       , tagline
                       , zoom
                       }) =
-  "{"
-  <> " " <> show "view_type" <> ":" <> show "admin" <> ","
-  <> " " <> show "description" <> ":" <> show description <> ","
-  -- TODO: details
-  <> " " <> show "lat" <> ":" <> show lat <> ","
-  <> " " <> show "lng" <> ":" <> show lng <> ","
-  <> " " <> show "name" <> ":" <> show name <> ","
-  <> " " <> show "radius" <> ":" <> show radius <> ","
-  <> " " <> show "stamp_by_location" <> ":" <> show stampByLocation <> ","
-  <> " " <> show "stamp_by_qr_code" <> ":" <> show stampByQrCode <> ","
-  <> " " <> show "tagline" <> ":" <> show tagline <> ","
-  <> " " <> show "zoom" <> ":" <> show zoom
-  <> " }"
+  ps [ p "view_type" "admin"
+     , p "description" description
+     -- TODO: details
+     , p "lat" lat
+     , p "lng" lng
+     , p "name" name
+     , p "radius" radius
+     , p "stamp_by_location" stampByLocation
+     , p "stamp_by_qr_code" stampByQrCode
+     , p "tagline" tagline
+     , p "zoom" zoom
+     ]
 
 url :: Int -> String
 url spotId = "https://api.rallyapp.jp/spots/" <> show spotId
