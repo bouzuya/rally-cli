@@ -16,7 +16,7 @@ import Data.StrMap (lookup) as StrMap
 import Data.Traversable (sequence)
 import Fetch (HTTP)
 import Node.Process (PROCESS, getEnv, exit) as Process
-import Prelude (Unit, ($), (<>), bind, pure, show, void)
+import Prelude (Unit, ($), bind, pure, show, void)
 import Request.CreateToken (createToken)
 import Request.GetSpot (getSpot)
 import Request.GetSpots (getSpots)
