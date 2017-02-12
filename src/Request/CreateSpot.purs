@@ -8,12 +8,11 @@ import Data.Either (either)
 import Data.Foreign (F)
 import Data.Foreign.Class (readJSON)
 import Data.Options ((:=))
-import Data.StrMap (fromFoldable) as StrMap
-import Data.Tuple (Tuple(..))
 import Fetch (HTTP, fetch)
 import Fetch.Options (Method(..), body, headers, method, url) as FetchOptions
 import Prelude (($), (<>), (<<<), bind, show)
 import Request.Helper.P (p, ps)
+import Request.Helper.Headers (headers)
 
 body :: String -> String
 body displayName =
@@ -38,11 +37,7 @@ createSpot stampRallyId displayName token = do
   let f = readJSON text :: F CreateSpotResponse
   makeAff (\ng ok -> either (ng <<< error <<< show) ok $ runExcept f)
   where
-    headers = StrMap.fromFoldable [ Tuple "Content-Type" "application/json"
-                                  , Tuple "User-Agent" "rally-cli"
-                                  , Tuple "Authorization" $ "Token token=\"" <> token <> "\""
-                                  ]
     options = FetchOptions.method := FetchOptions.POST
               <> FetchOptions.url := (url stampRallyId)
-              <> FetchOptions.headers := headers
+              <> FetchOptions.headers := (headers token)
               <> FetchOptions.body := (body displayName)

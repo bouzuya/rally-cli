@@ -3,12 +3,11 @@ module Request.UpdateSpot (updateSpot) where
 import Control.Monad.Aff (Aff)
 import Data.GetSpotResponse (GetSpotResponse(..))
 import Data.Options ((:=))
-import Data.StrMap (fromFoldable) as StrMap
-import Data.Tuple (Tuple(..))
 import Fetch (HTTP, fetch)
 import Fetch.Options (Method(..), body, headers, method, url) as FetchOptions
-import Prelude (Unit, ($), (<>), (<$>), const, show, unit)
+import Prelude (Unit, (<>), (<$>), const, show, unit)
 import Request.Helper.P (p, ps)
+import Request.Helper.Headers (headers)
 
 body :: GetSpotResponse -> String
 body (GetSpotResponse { description
@@ -48,11 +47,7 @@ updateSpot
          ) Unit
 updateSpot spotId spot token = const unit <$> fetch options
   where
-    headers = StrMap.fromFoldable [ Tuple "Content-Type" "application/json"
-                                  , Tuple "User-Agent" "rally-cli"
-                                  , Tuple "Authorization" $ "Token token=\"" <> token <> "\""
-                                  ]
     options = FetchOptions.method := FetchOptions.PATCH
               <> FetchOptions.url := (url spotId)
-              <> FetchOptions.headers := headers
+              <> FetchOptions.headers := (headers token)
               <> FetchOptions.body := (body spot)
