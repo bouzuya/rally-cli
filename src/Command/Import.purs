@@ -6,6 +6,7 @@ import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION, error, try)
 import Control.Monad.Except (runExcept)
+import Data.Array (reverse)
 import Data.CreateSpotResponse (CreateSpotResponse(..))
 import Data.CreateStampRallyResponse (CreateStampRallyResponse(..))
 import Data.CreateTokenResponse (CreateTokenResponse(..))
@@ -73,7 +74,7 @@ createSpot'
 createSpot' stampRallyId token spot@(GetSpotResponse { name, details }) = do
   (CreateSpotResponse { id: newId }) <- createSpot stampRallyId name token
   updateSpot newId spot token
-  sequence $ (\detail -> createSpotDetail newId detail token) <$> details
+  sequence $ (\detail -> createSpotDetail newId detail token) <$> reverse details
   pure newId
 
 createSpots
