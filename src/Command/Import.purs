@@ -24,6 +24,7 @@ import Prelude (Unit, ($), (<>), (<$>), (<<<), bind, pure, show, unit, void)
 import Request.CreateSpot (createSpot)
 import Request.CreateSpotDetail (createSpotDetail)
 import Request.CreateStampRally (createStampRally)
+import Request.CreateStampRallyDetail (createStampRallyDetail)
 import Request.CreateToken (createToken)
 import Request.UpdateSpot (updateSpot)
 import Request.UpdateStampRally (updateStampRally)
@@ -58,9 +59,10 @@ createStampRally'
    . GetStampRallyResponse
   -> String
   -> Aff ( http :: HTTP | e ) String
-createStampRally' stampRally@(GetStampRallyResponse { displayName }) token = do
+createStampRally' stampRally@(GetStampRallyResponse { displayName, details }) token = do
   (CreateStampRallyResponse { id: newId }) <- createStampRally displayName token
   updateStampRally newId stampRally token
+  sequence $ (\detail -> createStampRallyDetail newId detail token) <$> reverse details
   pure newId
 
 createSpot'
