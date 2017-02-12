@@ -16,7 +16,7 @@
   "devDependencies": {
     "bower": "1.8.0",
     "pulp": "10.0.0",
-    "purescript": "0.10.5"
+    "purescript": "0.10.6"
   },
   "keywords": [],
   "license": "MIT",
